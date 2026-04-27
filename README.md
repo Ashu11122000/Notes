@@ -299,6 +299,31 @@ Inside pgAdmin → **Register Server**
 
 ## API Endpoints
 
+* **Authentication**
+
+- POST `/auth/register` → 201 Created  
+- POST `/auth/login` → 200 OK  
+- POST `/auth/google` → 200 OK  
+- GET `/auth/me` → 200 OK  
+ 
+* **User**
+
+- GET `/users/profile` → 200 OK  
+- PUT `/users/profile` → 200 OK  
+- DELETE `/users/profile` → 204 No Content  
+
+* **Notes**
+
+- POST `/notes` → 201 Created  
+- GET `/notes` → 200 OK  
+- GET `/notes/{id}` → 200 OK  
+- PUT `/notes/{id}` → 200 OK  
+- DELETE `/notes/{id}` → 204 No Content  
+
+* **Pagination**
+
+- GET `/notes?page={page}&limit={limit}` → 200 OK  
+
 ---
 
 ## Authentication Flow
