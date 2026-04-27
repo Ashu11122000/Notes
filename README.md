@@ -77,8 +77,89 @@ Containerization = Packaging of app + all dependencies into one unit (container)
 
 ---
 
-## Backend Setup
+## Backend Setup using `uv`
+
+This project uses **uv** (a fast Python package manager) to manage dependencies and virtual environments.
+
+**1. Install `uv`**
+
+```bash
+pip install uv
+```
+
+---
+
+**2. Create Virtual Environment**
+
+```bash
+uv venv
+```
+
+Activate the environment on Windows:
+
+```bash
+.venv\Scripts\activate
+```
+
+---
+
+**3. Initialize Project**
+
+```bash
+uv init
+```
+
+---
+
+**4. Install Core Dependencies**
+
+```bash
+uv add fastapi sqlalchemy psycopg2-binary python-dotenv pydantic passlib[bcrypt] python-jose[cryptography] alembic pytest httpx email-validator
+```
+
+---
+
+**5. Install Optional Dependencies**
+*Google OAuth*
+
+```bash
+uv add authlib
+```
+
+*Pagination Support*
+
+```bash
+uv add fastapi-pagination
+```
+
+**6. Export Dependencies**
+
+```bash
+uv pip freeze > requirements.txt
+```
+
+**Installed Packages Overview**
+
+* **FastAPI** → Web framework
+* **SQLAlchemy** → ORM for database
+* **psycopg2-binary** → PostgreSQL driver
+* **Pydantic** → Data validation
+* **python-dotenv** → Environment variables
+* **passlib[bcrypt]** → Password hashing
+* **python-jose** → JWT authentication
+* **Alembic** → Database migrations
+* **Pytest** → Unit testing
+* **httpx** → API testing
+* **email-validator** → Email validation
+* **Authlib** → Google OAuth
+* **fastapi-pagination** → Pagination support 
+
+---
+
 ## Backend Folder Structure
+
+---
+
 ## Docker Setup (PostgreSQL + PgAdmin4)
 
 This section describes how to set up PostgreSQL and pgAdmin using Docker.
