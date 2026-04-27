@@ -261,11 +261,6 @@ Open in browser:
 http://localhost:5050
 ```
 
-Login credentials:
-
-* **Email:** [ashu11vats@gmail.com](mailto:ashu11vats@gmail.com)
-* **Password:** Ashu11122000
-
 **6.Connect PostgreSQL in pgAdmin**
 
 Inside pgAdmin → **Register Server**
