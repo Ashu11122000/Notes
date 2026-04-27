@@ -77,6 +77,14 @@ Containerization = Packaging of app + all dependencies into one unit (container)
 
 ---
 
+## HLD Flow Architecture
+
+```bash
+User → API → Auth → Service → Repository → Database → Response
+```
+
+---
+
 ## Backend Setup using `uv`
 
 This project uses **uv** (a fast Python package manager) to manage dependencies and virtual environments.
