@@ -156,7 +156,60 @@ uv pip freeze > requirements.txt
 
 ---
 
-## Backend Folder Structure
+## Project Folder Structure
+
+```
+app/
+├── main.py                     # Entry point of FastAPI application
+│
+├── core/
+│   ├── config.py              # Application settings & environment variables
+│   ├── security.py            # JWT auth & password hashing logic
+│
+├── db/
+│   ├── session.py             # Database engine & session creation
+│   ├── base.py                # Base class for SQLAlchemy models
+│
+├── models/
+│   ├── user.py                # User database model
+│   ├── note.py                # Note database model
+│
+├── schemas/
+│   ├── user.py                # User request/response schemas
+│   ├── note.py                # Note request/response schemas
+│   ├── token.py               # JWT token schema
+│
+├── api/
+│   ├── deps.py                # Shared dependencies (DB, auth)
+│   ├── routes/
+│   │   ├── auth.py            # Authentication routes (login/register)
+│   │   ├── notes.py           # Notes CRUD routes
+│
+├── services/
+│   ├── user_service.py        # User-related business logic
+│   ├── note_service.py        # Notes business logic (CRUD, pagination)
+│
+├── tests/
+│   ├── test_auth.py           # Tests for authentication APIs
+│   ├── test_notes.py          # Tests for notes APIs
+│
+.env                           # Environment variables
+requirements.txt               # Project dependencies
+Dockerfile                     # Docker configuration for backend
+docker-compose.yml             # Multi-container setup (app + DB)
+README.md                      # Project documentation
+```
+
+**Architecture Summary**
+
+* **models/** → Database layer (SQLAlchemy)
+* **schemas/** → Validation layer (Pydantic)
+* **services/** → Business logic layer
+* **api/** → Request handling (routes)
+* **core/** → Config & security
+* **db/** → Database connection
+
+This structure ensures clean, modular, and scalable backend design.
 
 ---
 
@@ -227,7 +280,7 @@ Inside pgAdmin → **Register Server**
 * Username: `postgres`
 * Password: `Ashu11122000@`
 
-### Final Status
+**Final Status**
 
 * PostgreSQL container running 
 * pgAdmin container running 
@@ -237,6 +290,9 @@ Inside pgAdmin → **Register Server**
 ---
 
 ## API Endpoints
+
+---
+
 ## Authentication Flow
 ## Pagination explanation
 ## Tests
