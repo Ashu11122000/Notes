@@ -1,0 +1,11 @@
+# Environment variables
+.env
+
+# Virtual Environment
+.venv
+
+# Python Version
+.python-Version
+
+# settings.json
+.vscode
