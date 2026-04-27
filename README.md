@@ -329,4 +329,3 @@ Inside pgAdmin → **Register Server**
 ## Authentication Flow
 ## Pagination explanation
 ## Tests
-## Postman Collection
