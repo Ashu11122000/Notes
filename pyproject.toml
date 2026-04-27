@@ -1,0 +1,21 @@
+[project]
+name = "notes"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "alembic>=1.18.4",
+    "authlib>=1.7.0",
+    "email-validator>=2.3.0",
+    "fastapi>=0.136.1",
+    "fastapi-pagination>=0.15.12",
+    "httpx>=0.28.1",
+    "passlib[bcrypt]>=1.7.4",
+    "psycopg2-binary>=2.9.12",
+    "pydantic>=2.13.3",
+    "pytest>=9.0.3",
+    "python-dotenv>=1.2.2",
+    "python-jose[cryptography]>=3.5.0",
+    "sqlalchemy>=2.0.49",
+]
