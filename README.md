@@ -77,6 +77,14 @@ Containerization = Packaging of app + all dependencies into one unit (container)
 
 ---
 
+## HLD Flow Architecture
+
+```bash
+User → API → Auth → Service → Repository → Database → Response
+```
+
+---
+
 ## Backend Setup using `uv`
 
 This project uses **uv** (a fast Python package manager) to manage dependencies and virtual environments.
@@ -156,7 +164,60 @@ uv pip freeze > requirements.txt
 
 ---
 
-## Backend Folder Structure
+## Project Folder Structure
+
+```
+app/
+├── main.py                     # Entry point of FastAPI application
+│
+├── core/
+│   ├── config.py              # Application settings & environment variables
+│   ├── security.py            # JWT auth & password hashing logic
+│
+├── db/
+│   ├── session.py             # Database engine & session creation
+│   ├── base.py                # Base class for SQLAlchemy models
+│
+├── models/
+│   ├── user.py                # User database model
+│   ├── note.py                # Note database model
+│
+├── schemas/
+│   ├── user.py                # User request/response schemas
+│   ├── note.py                # Note request/response schemas
+│   ├── token.py               # JWT token schema
+│
+├── api/
+│   ├── deps.py                # Shared dependencies (DB, auth)
+│   ├── routes/
+│   │   ├── auth.py            # Authentication routes (login/register)
+│   │   ├── notes.py           # Notes CRUD routes
+│
+├── services/
+│   ├── user_service.py        # User-related business logic
+│   ├── note_service.py        # Notes business logic (CRUD, pagination)
+│
+├── tests/
+│   ├── test_auth.py           # Tests for authentication APIs
+│   ├── test_notes.py          # Tests for notes APIs
+│
+.env                           # Environment variables
+requirements.txt               # Project dependencies
+Dockerfile                     # Docker configuration for backend
+docker-compose.yml             # Multi-container setup (app + DB)
+README.md                      # Project documentation
+```
+
+**Architecture Summary**
+
+* **models/** → Database layer (SQLAlchemy)
+* **schemas/** → Validation layer (Pydantic)
+* **services/** → Business logic layer
+* **api/** → Request handling (routes)
+* **core/** → Config & security
+* **db/** → Database connection
+
+This structure ensures clean, modular, and scalable backend design.
 
 ---
 
@@ -208,11 +269,6 @@ Open in browser:
 http://localhost:5050
 ```
 
-Login credentials:
-
-* **Email:** [ashu11vats@gmail.com](mailto:ashu11vats@gmail.com)
-* **Password:** Ashu11122000
-
 **6.Connect PostgreSQL in pgAdmin**
 
 Inside pgAdmin → **Register Server**
@@ -227,7 +283,7 @@ Inside pgAdmin → **Register Server**
 * Username: `postgres`
 * Password: `Ashu11122000@`
 
-### Final Status
+**Final Status**
 
 * PostgreSQL container running 
 * pgAdmin container running 
@@ -237,7 +293,34 @@ Inside pgAdmin → **Register Server**
 ---
 
 ## API Endpoints
+
+* **Authentication**
+
+- POST `/auth/register` → 201 Created  
+- POST `/auth/login` → 200 OK  
+- POST `/auth/google` → 200 OK  
+- GET `/auth/me` → 200 OK  
+ 
+* **User**
+
+- GET `/users/profile` → 200 OK  
+- PUT `/users/profile` → 200 OK  
+- DELETE `/users/profile` → 204 No Content  
+
+* **Notes**
+
+- POST `/notes` → 201 Created  
+- GET `/notes` → 200 OK  
+- GET `/notes/{id}` → 200 OK  
+- PUT `/notes/{id}` → 200 OK  
+- DELETE `/notes/{id}` → 204 No Content  
+
+* **Pagination**
+
+- GET `/notes?page={page}&limit={limit}` → 200 OK  
+
+---
+
 ## Authentication Flow
 ## Pagination explanation
 ## Tests
-## Postman Collection
