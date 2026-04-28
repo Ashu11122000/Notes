@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy.orm import relationship
 from app.db.base import Base
 
 class User(Base):
@@ -19,5 +20,7 @@ class User(Base):
     
     # Local or Google
     provider = Column(String, default = "local")
+    
+    note = relationship("Note", back_populates = "owner", cascade = "all, delete")
     
     
