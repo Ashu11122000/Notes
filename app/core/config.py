@@ -3,24 +3,24 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     # App
-    app_name: str
-    debug: bool
+    APP_NAME: str
+    DEBUG: bool
 
     # Server
-    host: str
-    port: int
+    HOST: str
+    PORT: int
 
     # Database
-    db_host: str
-    db_port: int
-    db_name: str
-    db_user: str
-    db_password: str
+    DB_HOST: str
+    DB_PORT: int
+    DB_NAME: str
+    DB_PORT: str
+    DB_PASSWORD: str
 
     # JWT
-    secret_key: str
-    algorithm: str
-    access_token_expire_minutes: int
+    SECRET_KEY: str
+    ALGORITHM: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int
 
     class Config:
         env_file = ".env"
