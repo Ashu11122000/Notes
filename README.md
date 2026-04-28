@@ -322,5 +322,58 @@ Inside pgAdmin → **Register Server**
 ---
 
 ## Authentication Flow
+
+```bash
+Client
+   ↓
+Routes (auth.py)
+   ↓
+Dependencies (deps.py)
+   ↓
+Security (JWT, hashing)
+   ↓
+Services (business logic)
+   ↓
+Database (PostgreSQL)
+```
+
+- Implemented JWT-based authentication with role-based access control.
+- Users can register and login with email/password or Google OAuth.
+- Passwords are securely hashed using bcrypt.
+- On login, a JWT token is issued containing user identity and role.
+- Protected routes use a dependency that validates the token, extracts the user, and enforces access control.
+- Also ensured users can only access resources based on their role and active status.
+
+---
+
+## Notes CRUD Operation Flows
+
+```bash
+Client (Request)
+      ↓
+FastAPI Route
+      ↓
+Dependency Injection
+(DB + current_user)
+      ↓
+Service Layer
+(logic + security)
+      ↓
+SQLAlchemy ORM
+      ↓
+PostgreSQL
+      ↓
+Response Schema
+      ↓
+Client (JSON)
+```
+
+- The request first hits the FastAPI route, where dependencies inject the database session and authenticated user via JWT.
+- Then the request is passed to the service layer, which handles business logic and enforces ownership checks.
+- The service interacts with the database using SQLAlchemy, and only returns data if the user is authorized.
+- Finally, the response is serialized using Pydantic schemas and returned to the client
+
+---
+
 ## Pagination explanation
 ## Tests
