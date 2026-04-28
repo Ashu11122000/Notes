@@ -21,6 +21,6 @@ class User(Base):
     # Local or Google
     provider = Column(String, default = "local")
     
-    note = relationship("Note", back_populates = "owner", cascade = "all, delete")
+    notes = relationship("Note", back_populates = "owner", cascade = "all, delete")
     
     
