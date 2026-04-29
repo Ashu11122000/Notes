@@ -1,30 +1,59 @@
+# Docker Compose configuration for the Notes App
 version: "3.9"
 
+# This Docker Compose file defines two services: 'app' for the FastAPI application and 'db' for the PostgreSQL database.
 services:
+
+  # The 'app' service builds the FastAPI application from the current directory, maps port 8000, and sets up environment variables for database connection.
   app:
+    
+    # Build the Docker image for the FastAPI application using the Dockerfile in the current directory.
     build: .
+
+    # Name of the container for the FastAPI application.
     container_name: notes_app
+
+    # Restart the container automatically if it crashes.
     ports:
       - "8000:8000"
+
+    # The 'app' service depends on the 'db' service, ensuring that the database is started before the application.
     depends_on:
       - db
+
+    # Environment variable to specify the database connection URL for the FastAPI application.
     environment:
       - DATABASE_URL=postgresql://postgres:password@db:5432/notes_db
+
+    # Mount the current directory to /app in the container, allowing for live code 
     volumes:
       - .:/app
 
+  # The 'db' service uses the official PostgreSQL image, sets up environment variables for the database, and maps port 5432.
   db:
+    # Uses the official PostgreSQL image version 15 for the database service.
     image: postgres:15
+
+    # Name of the container for the PostgreSQL database.
     container_name: notes_db
+
+    # Restart the container automatically if it crashes.
     restart: always
+
+    # Environment variables to configure the PostgreSQL database, including the username, password, and database name.
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=notes_db
+    
+    # Here, mapping port 5432 of the postgres container to port 5432 on the host machine
     ports:
       - "5432:5432"
+
+    # Here, I will create a volume names 'Postgres_data'. This will allow us to persist the data of our database even if the container is stopped or removed.
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+# Defines the named volume 'postgres_data' that is used to persist the PostgreSQL database data.
 volumes:
   postgres_data:
