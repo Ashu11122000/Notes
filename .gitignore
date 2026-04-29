@@ -1,0 +1,13 @@
+# Environment Variables
+.env 
+
+# Virtual Environment
+.venv
+
+# Python Version
+.python-Version
+
+# settings.json
+.vscode
+.early.coverage
+__pycache__
