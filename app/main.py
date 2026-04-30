@@ -9,22 +9,13 @@ app = FastAPI(
     debug=settings.DEBUG
 )
 
+
 # Root endpoint
 @app.get("/")
 def root():
     return {"message": "Notes Backend is running 🚀"}
 
 
-# Include Auth routes
-app.include_router(
-    auth.router,
-    prefix="/auth",
-    tags=["Auth"]
-)
-
-# Include Notes routes
-app.include_router(
-    note.router,
-    prefix="/notes",
-    tags=["Notes"]
-)
+# ✅ DO NOT add prefix here (already inside router)
+app.include_router(auth.router)
+app.include_router(note.router)
