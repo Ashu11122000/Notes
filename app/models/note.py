@@ -1,18 +1,20 @@
-from sqlalchemy import String, Text, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from app.db.base import Base
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy.orm import relationship
 from datetime import datetime
+
+from app.db.base import Base
+
 
 class Note(Base):
     __tablename__ = "notes"
-    
-    id: Mapped[int] = mapped_column(primary_key = True, index = True)
-    
-    title: Mapped[str] = mapped_column(String(255), nullable = False)
-    content: Mapped[str] = mapped_column(Text, nullable = False)
-    
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable = False)
-    created_at: Mapped[datetime] = mapped_column(default = datetime.utcnow)
-    updated_at: Mapped[datetime] = mapped_column(default = datetime.utcnow, onupdate = datetime.utcnow)
-    
-    owner = relationship("User", back_populates= "notes")
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, nullable=False)
+    content = Column(String, nullable=True)
+
+    owner_id = Column(Integer, ForeignKey("users.id"))
+
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    # relationship
+    owner = relationship("User", back_populates="notes")
