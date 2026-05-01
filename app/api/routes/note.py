@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi import APIRouter, Depends, status, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import List
 
@@ -20,13 +20,21 @@ def create_note_api(
     return note_service.create_note(db, user_id, note)
 
 
-# Get all notes
+# Get all notes (WITH pagination)
 @router.get("", response_model=List[NoteResponse])
 def get_notes_api(
+    page: int = Query(1, ge=1),
+    limit: int = Query(10, ge=1, le=100),
     db: Session = Depends(get_db),
     user_id: str = Depends(get_current_user),
 ):
-    return note_service.get_notes(db, user_id)
+    notes = note_service.get_notes(db, user_id)
+
+    # Apply pagination safely
+    start = (page - 1) * limit
+    end = start + limit
+
+    return notes[start:end]
 
 
 # Get note by ID
