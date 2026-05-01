@@ -4,376 +4,367 @@
 
 ## Overview
 
-This project is a RESTful backend service built using FastAPI that provides a complete notes management system. It allows users to securely create, manage, and organize notes through wee-structured APIs.
-The system is designed with a focus on clean architecture, scalability, and real-world backend practices, including authentication, database integration, containerization, and API documentation.
+This project is a **production-ready RESTful backend** built using **FastAPI**.
+It provides a secure and scalable system for managing personal notes with authentication, authorization, and clean architecture.
+
+The application demonstrates real-world backend practices including:
+
+* JWT authentication
+* Role-based access control
+* Database integration with PostgreSQL
+* Docker containerization
+* API documentation
+* Unit testing
 
 ---
 
 ## Key Features
 
-* **Authentication and Authorization**
-- Secure user registration and login using JWT-based authentication
-- Role-based access control for protected resources
+### Authentication & Authorization
 
-* **Notes Management**
-- Create, read, update, and delete notes
-- Each user can manage their own data securely
+* User registration and login
+* JWT-based authentication
+* Role-based access control (RBAC)
 
-* **Dockerized Setup**
-- Full containerized application using Docker and Docker Compose
-- Easy local setup and environment consistency
+### Notes Management
 
-* **API Documentation**
-- Auto-generated Swagger UI
-- Clear API structure for testing and integration
+* Create, read, update, delete notes (CRUD)
+* Users can only access their own notes
 
-* **Pagination Support**
-- Efficient handling of large datasets using paginated APIs
+### Dockerized Setup
 
-* **Social Login (Google Auth)**
-- Integration for seamless authentication using Google accounts
+* Fully containerized using Docker & Docker Compose
+* Consistent environment across systems
 
-* **Unit Testing**
-- Includes test cases to ensure reliability and correctness of core functionalities.
+### API Documentation
+
+* Swagger UI → `/docs`
+* ReDoc → `/redoc`
+
+### Testing
+
+* Pytest-based test suite
+* Covers authentication & notes APIs
+
+### Google OAuth (Optional)
+
+* Login via Google account using Authlib
 
 ---
 
 ## Project Goal
 
-The goal of this project is to demonstrate the ability to design and implement a production-ready backend system.
+To build a **clean, scalable, production-like backend system** using best practices:
 
-* **Clean and modular architecture:** Code is organized into clear, separate parts, where each part has one responsibility.
-   - `models/` → database tables (SQLAlchemy)
-   - `schemas/` → request/response validation (Pydantic)
-   - `api/` → routes (endpoints)
-   - `services/` → business logic
-   - `db/` → database connection
-
-* **Secure authentication mechanisms:** Only authorized users can access data, and their identity is verified securely.
-I will implement:
-   - Register/Login APIs
-   - JWT tokens
-   - Password hashing
-
-* **Containerized deployment:**
-Containerization = Packaging of app + all dependencies into one unit (container) so it runs anywhere.
-*Without Docker*
-- Works on own laptop
-- Fails on another system
-*With Docker*
-- Same environment everywhere
+* Separation of concerns
+* Secure authentication
+* Modular architecture
+* Containerized deployment
 
 ---
 
 ## Tech Stack
 
-* **Backend Framework:** `FastAPI`
-* **Database:** `PostgreSQL`
-* **ORM:** `SQLAlchemy`
-* **Authentication:** `JWT`
-* **Containerization:** `Docker`
-* **Testing:** `Pytest`
-* **API Testing:** `Postman`
+| Category         | Technology        |
+| ---------------- | ----------------- |
+| Framework        | FastAPI           |
+| Database         | PostgreSQL        |
+| ORM              | SQLAlchemy        |
+| Auth             | JWT (python-jose) |
+| Hashing          | Passlib (bcrypt)  |
+| Containerization | Docker            |
+| Testing          | Pytest            |
+| API Client       | Postman           |
 
 ---
 
-## HLD Flow Architecture
+## Architecture Overview
 
-```bash
-User → API → Auth → Service → Repository → Database → Response
 ```
-
----
-
-## Backend Setup using `uv`
-
-This project uses **uv** (a fast Python package manager) to manage dependencies and virtual environments.
-
-**1. Install `uv`**
-
-```bash
-pip install uv
+Client → API Routes → Dependencies → Services → Database → Response
 ```
 
 ---
 
-**2. Create Virtual Environment**
-
-```bash
-uv venv
-```
-
-Activate the environment on Windows:
-
-```bash
-.venv\Scripts\activate
-```
-
----
-
-**3. Initialize Project**
-
-```bash
-uv init
-```
-
----
-
-**4. Install Core Dependencies**
-
-```bash
-uv add fastapi sqlalchemy psycopg2-binary python-dotenv pydantic passlib[bcrypt] python-jose[cryptography] alembic pytest httpx email-validator
-```
-
----
-
-**5. Install Optional Dependencies**
-*Google OAuth*
-
-```bash
-uv add authlib
-```
-
-*Pagination Support*
-
-```bash
-uv add fastapi-pagination
-```
-
-**6. Export Dependencies**
-
-```bash
-uv pip freeze > requirements.txt
-```
-
-**Installed Packages Overview**
-
-* **FastAPI** → Web framework
-* **SQLAlchemy** → ORM for database
-* **psycopg2-binary** → PostgreSQL driver
-* **Pydantic** → Data validation
-* **python-dotenv** → Environment variables
-* **passlib[bcrypt]** → Password hashing
-* **python-jose** → JWT authentication
-* **Alembic** → Database migrations
-* **Pytest** → Unit testing
-* **httpx** → API testing
-* **email-validator** → Email validation
-* **Authlib** → Google OAuth
-* **fastapi-pagination** → Pagination support 
-
----
-
-## Project Folder Structure
+## Project Structure
 
 ```
 app/
-├── main.py                     # Entry point of FastAPI application
+├── main.py
 │
 ├── core/
-│   ├── config.py              # Application settings & environment variables
-│   ├── security.py            # JWT auth & password hashing logic
+│   ├── config.py
+│   ├── security.py
 │
 ├── db/
-│   ├── session.py             # Database engine & session creation
-│   ├── base.py                # Base class for SQLAlchemy models
+│   ├── session.py
+│   ├── base.py
 │
 ├── models/
-│   ├── user.py                # User database model
-│   ├── note.py                # Note database model
+│   ├── user.py
+│   ├── note.py
 │
 ├── schemas/
-│   ├── user.py                # User request/response schemas
-│   ├── note.py                # Note request/response schemas
-│   ├── token.py               # JWT token schema
+│   ├── user.py
+│   ├── note.py
+│   ├── token.py
 │
 ├── api/
-│   ├── deps.py                # Shared dependencies (DB, auth)
+│   ├── deps.py
 │   ├── routes/
-│   │   ├── auth.py            # Authentication routes (login/register)
-│   │   ├── notes.py           # Notes CRUD routes
+│   │   ├── auth.py
+│   │   ├── note.py
 │
 ├── services/
-│   ├── user_service.py        # User-related business logic
-│   ├── note_service.py        # Notes business logic (CRUD, pagination)
+│   ├── user_service.py
+│   ├── note_service.py
 │
 ├── tests/
-│   ├── test_auth.py           # Tests for authentication APIs
-│   ├── test_notes.py          # Tests for notes APIs
+│   ├── test_auth.py
+│   ├── test_notes.py
 │
-.env                           # Environment variables
-requirements.txt               # Project dependencies
-Dockerfile                     # Docker configuration for backend
-docker-compose.yml             # Multi-container setup (app + DB)
-README.md                      # Project documentation
-```
-
-**Architecture Summary**
-
-* **models/** → Database layer (SQLAlchemy)
-* **schemas/** → Validation layer (Pydantic)
-* **services/** → Business logic layer
-* **api/** → Request handling (routes)
-* **core/** → Config & security
-* **db/** → Database connection
-
-This structure ensures clean, modular, and scalable backend design.
-
----
-
-## Docker Setup (PostgreSQL + PgAdmin4)
-
-This section describes how to set up PostgreSQL and pgAdmin using Docker.
-
-**1. Pull PostgreSQL Image**
-
-```bash
-docker pull postgres:15
+.env
+requirements.txt
+Dockerfile
+docker-compose.yml
+README.md
 ```
 
 ---
 
-**2. Run PostgreSQL Container**
+## Local Setup
+
+### 1. Create Virtual Environment
 
 ```bash
-docker run --name notes-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD='Ashu11122000@' -e POSTGRES_DB=postgres -p 5432:5432 -d postgres:15
-```
-
-Verify container is running:
-
-```bash
-docker ps
+python -m venv .venv
+.venv\Scripts\activate   # Windows
 ```
 
 ---
 
-**3. Pull pgAdmin Image**
+### 2. Install Dependencies
 
 ```bash
-docker pull dpage/pgadmin4
+pip install -r requirements.txt
 ```
 
 ---
 
-**4. Run pgAdmin Container**
+### 3. Run the App
 
 ```bash
-docker run --name pgadmin-container -p 5050:80 -e PGADMIN_DEFAULT_EMAIL=ashu11vats@gmail.com -e PGADMIN_DEFAULT_PASSWORD=Ashu11122000 -d dpage/pgadmin4
+uvicorn app.main:app --reload
 ```
 
-**5. Access pgAdmin**
+---
 
-Open in browser:
+### 4. Open API Docs
 
 ```
-http://localhost:5050
+http://127.0.0.1:8000/docs
 ```
 
-**6.Connect PostgreSQL in pgAdmin**
+---
 
-Inside pgAdmin → **Register Server**
+## Docker Setup
 
-*General Tab*
-* Name: `Local PostgreSQL`
+### Build & Run
 
-*Connection Tab*
-* Host: `host.docker.internal`
-* Port: `5432`
-* Maintenance DB: `postgres`
-* Username: `postgres`
-* Password: `Ashu11122000@`
+```bash
+docker compose up --build
+```
 
-**Final Status**
+### Run in background
 
-* PostgreSQL container running 
-* pgAdmin container running 
-* Connection established 
+```bash
+docker compose up -d
+```
 
+### Stop containers
+
+```bash
+docker compose down
+```
+
+---
+
+## Run Tests
+
+```bash
+pytest
+```
 
 ---
 
 ## API Endpoints
 
-* **Authentication**
+### Auth
 
-- POST `/auth/register` → 201 Created  
-- POST `/auth/login` → 200 OK  
-- POST `/auth/google` → 200 OK  
-- GET `/auth/me` → 200 OK  
- 
-* **User**
+| Method | Endpoint         | Description      |
+| ------ | ---------------- | ---------------- |
+| POST   | `/auth/register` | Register user    |
+| POST   | `/auth/login`    | Login user       |
+| GET    | `/auth/me`       | Get current user |
 
-- GET `/users/profile` → 200 OK  
-- PUT `/users/profile` → 200 OK  
-- DELETE `/users/profile` → 204 No Content  
+---
 
-* **Notes**
+### Notes
 
-- POST `/notes` → 201 Created  
-- GET `/notes` → 200 OK  
-- GET `/notes/{id}` → 200 OK  
-- PUT `/notes/{id}` → 200 OK  
-- DELETE `/notes/{id}` → 204 No Content  
-
-* **Pagination**
-
-- GET `/notes?page={page}&limit={limit}` → 200 OK  
+| Method | Endpoint      | Description   |
+| ------ | ------------- | ------------- |
+| POST   | `/notes`      | Create note   |
+| GET    | `/notes`      | Get all notes |
+| GET    | `/notes/{id}` | Get note      |
+| PUT    | `/notes/{id}` | Update note   |
+| DELETE | `/notes/{id}` | Delete note   |
 
 ---
 
 ## Authentication Flow
 
-```bash
-Client
-   ↓
-Routes (auth.py)
-   ↓
-Dependencies (deps.py)
-   ↓
-Security (JWT, hashing)
-   ↓
-Services (business logic)
-   ↓
-Database (PostgreSQL)
+```
+Client → Login → JWT Token
+        ↓
+Protected Route → Token Validation → User Access
 ```
 
-- Implemented JWT-based authentication with role-based access control.
-- Users can register and login with email/password or Google OAuth.
-- Passwords are securely hashed using bcrypt.
-- On login, a JWT token is issued containing user identity and role.
-- Protected routes use a dependency that validates the token, extracts the user, and enforces access control.
-- Also ensured users can only access resources based on their role and active status.
+* Passwords hashed using bcrypt
+* JWT token contains user identity
+* Token required for protected routes
 
 ---
 
-## Notes CRUD Operation Flows
+## Notes Flow
 
-```bash
-Client (Request)
-      ↓
-FastAPI Route
-      ↓
-Dependency Injection
-(DB + current_user)
-      ↓
-Service Layer
-(logic + security)
-      ↓
-SQLAlchemy ORM
-      ↓
-PostgreSQL
-      ↓
-Response Schema
-      ↓
-Client (JSON)
+```
+Request → Route → Service → DB → Response
 ```
 
-- The request first hits the FastAPI route, where dependencies inject the database session and authenticated user via JWT.
-- Then the request is passed to the service layer, which handles business logic and enforces ownership checks.
-- The service interacts with the database using SQLAlchemy, and only returns data if the user is authorized.
-- Finally, the response is serialized using Pydantic schemas and returned to the client
+* Ownership enforced at service layer
+* Users can only access their own notes
 
 ---
 
-## Pagination explanation
-## Tests
+## Important Notes
+
+* `owner_id` is used instead of `user_id` in database
+* Pydantic V2 uses `ConfigDict` instead of `Config`
+* Docker does NOT generate requirements (only installs)
+
+---
+
+## Pagination (Concept & Usage)
+
+Pagination helps in efficiently handling large datasets by returning results in smaller chunks instead of loading everything at once.
+
+### How it works?
+
+```bash
+GET /notes?page=1&limit=10
+```
+
+* `page` → Page number (starts from 1)
+* `limit` → Number of records per page
+
+### Internal Logic
+
+```python
+skip = (page - 1) * limit
+```
+
+* Page 1 → skip = 0
+* Page 2 → skip = 10
+* Page 3 → skip = 20
+
+### Example Response
+
+```json
+[
+  {
+    "id": 1,
+    "title": "My Note",
+    "content": "Hello World",
+    "owner_id": 1,
+    "created_at": "2026-05-01T10:00:00",
+    "updated_at": null
+  }
+]
+```
+
+### Benefits
+
+* Improves performance
+* Reduces server load
+* Better user experience for large datasets
+
+* Note: Pagination can be easily re-enabled in the API by adding `page` and `limit` query parameters in the `/notes` route.
+
+---
+
+## Testing
+
+This project uses **Pytest** to ensure the correctness of core functionalities.
+
+### Run Tests
+
+```bash
+pytest
+```
+
+---
+
+### Test Coverage
+
+#### Authentication Tests
+
+* User registration (`/auth/register`)
+* User login (`/auth/login`)
+* JWT token generation and validation
+
+#### Notes Tests
+
+* Create note (`POST /notes`)
+* Get notes (`GET /notes`)
+* Authorization using Bearer token
+* Ownership validation
+
+---
+
+### Testing Approach
+
+* Uses `TestClient` from FastAPI
+* Simulates real API requests
+* Tests both success and failure cases
+* Ensures authentication is required for protected routes
+
+---
+
+### Example Test Flow
+
+```bash
+Register → Login → Get Token → Access Protected Route
+```
+
+---
+
+### Why Testing matters?
+
+* Prevents regressions
+* Ensures API reliability
+* Validates authentication & authorization logic
+* Helps maintain production-ready code quality
+
+---
+
+## Final Status
+
+* All tests passing
+* Fully functional authentication system
+* Secure notes management
+* Dockerized backend
+* Clean architecture
+
+---
+
+
