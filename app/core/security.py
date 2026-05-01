@@ -34,7 +34,11 @@ def create_access_token(data: dict) -> str:
         minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
     )
 
-    to_encode.update({"exp": expire})
+    # Always store user id as string (important for JWT)
+    to_encode.update({
+        "exp": expire,
+        "sub": str(data.get("sub"))
+    })
 
     encoded_jwt = jwt.encode(
         to_encode,
