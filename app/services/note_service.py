@@ -11,7 +11,10 @@ def get_user(db: Session, user_email: str) -> User:
     user = db.query(User).filter(User.email == user_email).first()
 
     if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
 
     return user
 
@@ -20,7 +23,11 @@ def get_user(db: Session, user_email: str) -> User:
 def create_note(db: Session, user_email: str, note_data: NoteCreate):
     user = get_user(db, user_email)
 
-    note = Note(title=note_data.title, content=note_data.content, user_id=user.id)
+    note = Note(
+        title=note_data.title,
+        content=note_data.content,
+        owner_id=user.id  
+    )
 
     db.add(note)
     db.commit()
@@ -33,7 +40,7 @@ def create_note(db: Session, user_email: str, note_data: NoteCreate):
 def get_notes(db: Session, user_email: str):
     user = get_user(db, user_email)
 
-    return db.query(Note).filter(Note.user_id == user.id).all()
+    return db.query(Note).filter(Note.owner_id == user.id).all()
 
 
 # Get note by ID
@@ -43,15 +50,22 @@ def get_note_by_id(db: Session, user_email: str, note_id: int):
     note = db.query(Note).filter(Note.id == note_id).first()
 
     if not note:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Note not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Note not found"
+        )
 
     # Ownership check
-    if user.role != "admin" and note.user_id != user.id:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to access this note")
+    if user.role != "admin" and note.owner_id != user.id: 
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized to access this note"
+        )
 
     return note
- 
-# Update Note
+
+
+# Update note
 def update_note(db: Session, user_email: str, note_id: int, note_data: NoteUpdate):
     note = get_note_by_id(db, user_email, note_id)
 
