@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from app.core.config import settings
 
-# Import routers
 from app.api.routes import auth, note
 
 app = FastAPI(
@@ -10,12 +9,9 @@ app = FastAPI(
 )
 
 
-# Root endpoint
 @app.get("/")
 def root():
-    return {"message": "Notes Backend is running 🚀"}
+    return {"message": "Notes Backend is running"}
 
-
-# ✅ DO NOT add prefix here (already inside router)
 app.include_router(auth.router)
 app.include_router(note.router)
