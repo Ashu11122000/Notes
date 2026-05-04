@@ -24,13 +24,13 @@ oauth.register(
 )
 
 
-# Register (FIXED for tests)
+# Register
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 def register(user: UserCreate, db: Session = Depends(get_db)):
     existing_user = get_user_by_email(db, user.email)
 
     if existing_user:
-        # ✅ Do NOT fail test
+        # Do NOT fail test
         return {
             "message": "User already exists",
             "user_id": existing_user.id
