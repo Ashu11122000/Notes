@@ -4,13 +4,16 @@ FROM python:3.12
 # Set working directory
 WORKDIR /app
 
-# Copy requirements first (for caching)
+# Install uv
+RUN pip install --no-cache-dir uv
+
+# Copy dependency files first (better caching)
 COPY requirements.txt .
 
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install dependencies using uv
+RUN uv pip install --system -r requirements.txt
 
-# Copy full project
+# Copy project files
 COPY . .
 
 # Run FastAPI
