@@ -46,9 +46,9 @@ services:
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=notes_db
     
-    # Here, mapping port 5432 of the postgres container to port 5432 on the host machine
+    # Here, mapping port 5433 of the postgres container to port 5432 on the host machine
     ports:
-      - "5432:5432"
+      - "5433:5432"
 
     # Here, I will create a volume names 'Postgres_data'. This will allow us to persist the data of our database even if the container is stopped or removed.
     volumes:
