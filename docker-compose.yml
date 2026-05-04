@@ -1,5 +1,4 @@
 # Docker Compose configuration for the Notes App
-version: "3.9"
 
 # This Docker Compose file defines two services: 'app' for the FastAPI application and 'db' for the PostgreSQL database.
 services:
@@ -21,9 +20,26 @@ services:
     depends_on:
       - db
 
-    # Environment variable to specify the database connection URL for the FastAPI application.
+    # Override environment variables for Docker (VERY IMPORTANT)
     environment:
-      - DATABASE_URL=postgresql://postgres:password@db:5432/notes_db
+      - APP_NAME=Notes Backend
+      - DEBUG=True
+      - HOST=0.0.0.0
+      - PORT=8000
+
+      # 🔥 FIX: use 'db' instead of localhost
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=notes_db
+      - DB_USER=postgres
+      - DB_PASSWORD=Ashu11122000@
+
+      - SECRET_KEY=supersecretkey
+      - ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+      - GOOGLE_CLIENT_ID=578024159733-civh19cpp7gkf5pes9g19qkibcke32c7.apps.googleusercontent.com
+      - GOOGLE_CLIENT_SECRET=your_client_secret
 
     # Mount the current directory to /app in the container, allowing for live code 
     volumes:
@@ -43,7 +59,7 @@ services:
     # Environment variables to configure the PostgreSQL database, including the username, password, and database name.
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_PASSWORD=Ashu11122000@
       - POSTGRES_DB=notes_db
     
     # Here, mapping port 5433 of the postgres container to port 5432 on the host machine
