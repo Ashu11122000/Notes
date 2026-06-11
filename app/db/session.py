@@ -1,34 +1,36 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from urllib.parse import quote_plus
+
+from sqlalchemy import create_engine # type: ignore
+from sqlalchemy.orm import sessionmaker # type: ignore
 
 from app.core.config import settings
 
 
-# Encode password (VERY IMPORTANT)
+# Encode special characters in password
 password = quote_plus(settings.DB_PASSWORD)
 
-# Database URL
 DATABASE_URL = (
     f"postgresql+psycopg2://{settings.DB_USER}:{password}"
     f"@{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}"
 )
 
-# Engine
-engine = create_engine(DATABASE_URL)
+# SQLAlchemy Engine
+engine = create_engine(
+    DATABASE_URL,
+    pool_pre_ping=True,
+)
 
-
-# Session
+# Session Factory
 SessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,
-    bind=engine
+    bind=engine,
 )
 
-
-# Dependency 
+# Database Dependency
 def get_db():
     db = SessionLocal()
+
     try:
         yield db
     finally:

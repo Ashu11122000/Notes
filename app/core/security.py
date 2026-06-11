@@ -1,13 +1,12 @@
-from datetime import datetime, timedelta
-from jose import jwt, JWTError
-from passlib.context import CryptContext
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from datetime import datetime, timedelta, timezone
+
+from jose import JWTError, jwt # type: ignore
+from passlib.context import CryptContext # type: ignore
 
 from app.core.config import settings
 
 
-# Password hashing
+# Password Hashing
 pwd_context = CryptContext(
     schemes=["bcrypt"],
     deprecated="auto"
@@ -18,38 +17,36 @@ def hash_password(password: str) -> str:
     return pwd_context.hash(password)
 
 
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
+def verify_password(
+    plain_password: str,
+    hashed_password: str
+) -> bool:
+    return pwd_context.verify(
+        plain_password,
+        hashed_password
+    )
 
 
-# OAuth2 scheme (used for extracting token from request)
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
-
-
-# Create JWT token
+# Create JWT Token
 def create_access_token(data: dict) -> str:
     to_encode = data.copy()
 
-    expire = datetime.utcnow() + timedelta(
+    expire = datetime.now(timezone.utc) + timedelta(
         minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
     )
 
-    # Always store user id as string (important for JWT)
     to_encode.update({
-        "exp": expire,
-        "sub": str(data.get("sub"))
+        "exp": expire
     })
 
-    encoded_jwt = jwt.encode(
+    return jwt.encode(
         to_encode,
         settings.SECRET_KEY,
         algorithm=settings.ALGORITHM
     )
 
-    return encoded_jwt
 
-
-# Decode JWT token
+# Decode JWT Token
 def decode_access_token(token: str):
     try:
         payload = jwt.decode(
@@ -57,27 +54,8 @@ def decode_access_token(token: str):
             settings.SECRET_KEY,
             algorithms=[settings.ALGORITHM]
         )
+
         return payload
+
     except JWTError:
         return None
-
-
-# Get current user (USED IN PROTECTED ROUTES)
-def get_current_user(token: str = Depends(oauth2_scheme)):
-    payload = decode_access_token(token)
-
-    if payload is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid or expired token"
-        )
-
-    user_id = payload.get("sub")
-
-    if user_id is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid token payload"
-        )
-
-    return user_id

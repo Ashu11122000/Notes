@@ -1,10 +1,10 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict # type: ignore
 
 
 class Settings(BaseSettings):
-    # App
+    # Application
     APP_NAME: str
-    DEBUG: bool
+    DEBUG: bool = False
 
     # Server
     HOST: str
@@ -22,12 +22,10 @@ class Settings(BaseSettings):
     ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
 
-    # Google OAuth
-    GOOGLE_CLIENT_ID: str
-    GOOGLE_CLIENT_SECRET: str
-
-    class Config:
-        env_file = ".env"
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        extra="ignore"
+    )
 
 
 settings = Settings()

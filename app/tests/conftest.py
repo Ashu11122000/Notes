@@ -1,13 +1,15 @@
-import pytest
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from fastapi.testclient import TestClient
+import pytest # type: ignore
+
+from fastapi.testclient import TestClient # type: ignore
+from sqlalchemy import create_engine # type: ignore
+from sqlalchemy.orm import sessionmaker # type: ignore
 
 from app.main import app
 from app.db.base import Base
 from app.db.session import get_db
 
-# SQLite for testing
+
+# SQLite Test Database
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 
 engine = create_engine(
@@ -21,13 +23,11 @@ TestingSessionLocal = sessionmaker(
     bind=engine
 )
 
-# Create tables
-Base.metadata.create_all(bind=engine)
 
-
-# Override DB dependency
+# Override Database Dependency
 def override_get_db():
     db = TestingSessionLocal()
+
     try:
         yield db
     finally:
@@ -36,6 +36,14 @@ def override_get_db():
 
 app.dependency_overrides[get_db] = override_get_db
 
-@pytest.fixture
+
+@pytest.fixture(scope="function")
 def test_client():
-    return TestClient(app)
+    # Fresh database for every test
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
+
+    with TestClient(app) as client:
+        yield client
+
+    Base.metadata.drop_all(bind=engine)

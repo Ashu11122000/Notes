@@ -1,20 +1,24 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field # type: ignore
 
-# Class for user register
+
+# User Registration
 class UserCreate(BaseModel):
     email: EmailStr
-    password: str
-    
-# Class for user login
+    password: str = Field(..., min_length=8, max_length=128)
+
+
+# User Login
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
-    
-# Class for response schema which never exposes password
+
+
+# User Response
 class UserResponse(BaseModel):
     id: int
     email: EmailStr
     role: str
-    
+    is_active: bool
+
     class Config:
         from_attributes = True

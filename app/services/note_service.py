@@ -1,53 +1,55 @@
-from sqlalchemy.orm import Session
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status # type: ignore
+from sqlalchemy.orm import Session # type: ignore
 
 from app.models.note import Note
 from app.models.user import User
 from app.schemas.note import NoteCreate, NoteUpdate
 
 
-# Helper: get user from email
-def get_user(db: Session, user_email: str) -> User:
-    user = db.query(User).filter(User.email == user_email).first()
-
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found"
-        )
-
-    return user
-
-
 # Create Note
-def create_note(db: Session, user_email: str, note_data: NoteCreate):
-    user = get_user(db, user_email)
-
-    note = Note(
-        title=note_data.title,
-        content=note_data.content,
-        owner_id=user.id  
+def create_note(
+    db: Session,
+    user_id: int,
+    note: NoteCreate
+):
+    db_note = Note(
+        title=note.title,
+        content=note.content,
+        owner_id=user_id
     )
 
-    db.add(note)
+    db.add(db_note)
     db.commit()
-    db.refresh(note)
+    db.refresh(db_note)
 
-    return note
-
-
-# Get all notes
-def get_notes(db: Session, user_email: str):
-    user = get_user(db, user_email)
-
-    return db.query(Note).filter(Note.owner_id == user.id).all()
+    return db_note
 
 
-# Get note by ID
-def get_note_by_id(db: Session, user_email: str, note_id: int):
-    user = get_user(db, user_email)
+# Get Notes (Paginated)
+def get_notes(
+    db: Session,
+    user_id: int,
+    skip: int = 0,
+    limit: int = 10
+):
+    return (
+        db.query(Note)
+        .filter(Note.owner_id == user_id)
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
 
-    note = db.query(Note).filter(Note.id == note_id).first()
+
+# Get Note By ID
+def get_note_by_id(
+    db: Session,
+    current_user: User,
+    note_id: int
+):
+    query = db.query(Note).filter(Note.id == note_id)
+
+    note = query.first()
 
     if not note:
         raise HTTPException(
@@ -55,8 +57,10 @@ def get_note_by_id(db: Session, user_email: str, note_id: int):
             detail="Note not found"
         )
 
-    # Ownership check
-    if user.role != "admin" and note.owner_id != user.id: 
+    if (
+        current_user.role != "admin"
+        and note.owner_id != current_user.id
+    ):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not authorized to access this note"
@@ -65,15 +69,25 @@ def get_note_by_id(db: Session, user_email: str, note_id: int):
     return note
 
 
-# Update note
-def update_note(db: Session, user_email: str, note_id: int, note_data: NoteUpdate):
-    note = get_note_by_id(db, user_email, note_id)
+# Update Note
+def update_note(
+    db: Session,
+    current_user: User,
+    note_id: int,
+    note_data: NoteUpdate
+):
+    note = get_note_by_id(
+        db,
+        current_user,
+        note_id
+    )
 
-    if note_data.title is not None:
-        note.title = note_data.title
+    update_data = note_data.model_dump(
+        exclude_unset=True
+    )
 
-    if note_data.content is not None:
-        note.content = note_data.content
+    for field, value in update_data.items():
+        setattr(note, field, value)
 
     db.commit()
     db.refresh(note)
@@ -81,9 +95,17 @@ def update_note(db: Session, user_email: str, note_id: int, note_data: NoteUpdat
     return note
 
 
-# Delete note
-def delete_note(db: Session, user_email: str, note_id: int):
-    note = get_note_by_id(db, user_email, note_id)
+# Delete Note
+def delete_note(
+    db: Session,
+    current_user: User,
+    note_id: int
+):
+    note = get_note_by_id(
+        db,
+        current_user,
+        note_id
+    )
 
     db.delete(note)
     db.commit()

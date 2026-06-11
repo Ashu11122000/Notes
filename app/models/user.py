@@ -1,5 +1,5 @@
-from sqlalchemy import Column, Integer, String, Boolean
-from sqlalchemy.orm import relationship
+from sqlalchemy import Boolean, Column, Integer, String # type: ignore
+from sqlalchemy.orm import relationship # type: ignore
 
 from app.db.base import Base
 
@@ -7,12 +7,39 @@ from app.db.base import Base
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True)
-    hashed_password = Column(String, nullable=True)
-    is_active = Column(Boolean, default=True)
-    role = Column(String, default="user")
-    provider = Column(String, default="local")
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True
+    )
 
-    # relationship
-    notes = relationship("Note", back_populates="owner")
+    email = Column(
+        String(255),
+        unique=True,
+        index=True,
+        nullable=False
+    )
+
+    hashed_password = Column(
+        String,
+        nullable=False
+    )
+
+    is_active = Column(
+        Boolean,
+        default=True,
+        nullable=False
+    )
+
+    role = Column(
+        String(50),
+        default="user",
+        nullable=False
+    )
+
+    # Relationships
+    notes = relationship(
+        "Note",
+        back_populates="owner",
+        cascade="all, delete-orphan"
+    )
