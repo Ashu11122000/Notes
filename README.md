@@ -221,6 +221,84 @@ pytest
 
 ---
 
+## FastAPI Service
+
+This service is responsible for handling authentication and note-related functionality for the Team Productivity Platform.
+
+### Responsibilities
+
+* Authentication
+* User Management
+* Notes Management
+* Open Library Integration
+* Note-to-Task Conversion
+
+### Base URL
+
+```http
+http://localhost:8000/api/v1
+```
+
+### Health Check
+
+```http
+GET /health
+```
+
+Example Response:
+
+```json
+{
+  "status": "healthy"
+}
+```
+
+### Service Ownership
+
+The FastAPI service owns:
+
+#### Authentication
+
+```http
+POST /auth/register
+POST /auth/login
+GET  /auth/me
+```
+
+#### Notes
+
+```http
+POST   /notes
+GET    /notes
+GET    /notes/{id}
+PUT    /notes/{id}
+DELETE /notes/{id}
+```
+
+#### Future Endpoints
+
+```http
+GET  /users/me
+PUT  /users/me
+
+GET  /books/search
+
+POST /notes/{id}/convert-to-tasks
+```
+
+### Integration
+
+This service will be consumed by:
+
+* Next.js Frontend
+* NestJS Productivity Service
+
+Authentication is shared across services using JWT tokens.
+
+Users authenticate once and can access resources managed by both FastAPI and NestJS without logging in again.
+
+---
+
 ## Authentication Flow
 
 ```
